@@ -1,0 +1,72 @@
+{
+  "users": [
+    {
+      "email": "marka@mail.ru",
+      "password": "$2a$10$BApnOAdYP1uFwkTIzJPoOulejr68zHPoqQkREzNW/TtKRGtRy3NGi",
+      "id": 1
+    },
+    {
+      "email": "dasda@mail.ru",
+      "password": "$2a$10$U5Qut9Nqbd4e1eLcSscKAOExycz.mKSqE3/3S8y.oLwD8DqRKWfSO",
+      "id": 2
+    },
+    { 
+      "email": "dadwadaw@mail.ru",
+      "password": "$2a$10$ERsxa.4px33BVhyZ6MBIkelxELUvbGZkMlyy9hH2gNbIEo1zHVjpe",
+      "id": 3
+    },
+    {
+      "email": "khalilov@mail.ru",
+      "password": "$2a$10$8lzBSFmiVbhDcUag5yXm7.xmU7numaayHjoTdliFSVntrQhZfazty",
+      "id": 4
+    },
+    {
+      "email": "maadsrka@mail.ru",
+      "password": "$2a$10$HDYRjgRw26yMaN6S28cLJuVZINLceeashAuuhmoBfEP8O5AwDwwQW",
+      "id": 5
+    },
+    {
+      "email": "dsaas@mail.ru",
+      "password": "$2a$10$uWiVemULp7.HaO9ig0dc5OmvuUM5IZ6IXAcTTFarrd0Zb340TzWNq",
+      "id": 6
+    },
+    {
+      "email": "dawdaw@mail.ru",
+      "password": "$2a$10$aBYxDIJAGHBZM8Ie.PfOtuKzJpt0xFN.sov8hKQ7xM/T0lPn7JFlu",
+      "id": 7
+    },
+    {
+      "email": "khalilov77@gmail.com",
+      "name": "Akram",
+      "surname": "Khalilov",
+      "age": 18,
+      "password": "$2a$10$w/TX4FFGo.yyQ8hg/KMfMuCHC5Vi0CIWcsdB85ei7DQfId0aQUrEa",
+      "id": 8
+    },
+    {
+      "email": "daowbdkuaj@mail.ru",
+      "password": "$2a$10$8tIazRZNTTY85G86SNWqAe/gx7W9SyuLHhbk3TcjSz9gf6YHxXF8C",
+      "id": 9
+    },
+    {
+      "email": "khalilov22@gmail.com",
+      "password": "$2a$10$vsq0Q9LDAyXjOxFRgqXgdOSAPpyvgftDtFUrZj2tEtS/P6oRlR4iG",
+      "id": 10
+    },
+    {
+      "email": "akram012@gmail.com",
+      "password": "$2a$10$YVQsvSbhcv3ZyXbEbL6obOywrAUNFfdIocv3omHdNE74Yl45dOvrG",
+      "id": 11
+    },
+    {
+      "email": "akram0123@gmail.com",
+      "password": "$2a$10$5ZQ1ejQGdRFOsF5mD0/WrOIGjjqrOztQe3TRj2dVciqg0tD9jrRzy",
+      "id": 12
+    },
+    {
+      "email": "alisher@mail.ru",
+      "password": "$2a$10$5u4nH6NekjuOoY4cB/z/uug6Zrk9IgdXrtFdZpGtYD3jSbUmIto/6",
+      "id": 13
+    }
+  ]
+}
