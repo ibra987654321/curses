@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Apple, Google } from '../../ui/icons';
 import styled from 'styled-components';
@@ -41,14 +41,10 @@ const Wrapper = styled.div`
 const Signup = () => {
 
     const [submit, setSubmit] = useState(false)
-    // const [formData, setFormData] = useState({
-    //     username: "",
-    //     email: "",
-    //     password1: "",
-    //     password2: "",
-    // });
+
     const dispatch = useDispatch();
-    const { username, email, password1, password2, loading, error, success } = useSelector(state => state.form);
+    const navigate = useNavigate();
+    const { email, password1, password2, loading, error, success, token } = useSelector(state => state.form);
     const handleChange = (e) => {
         const { name, value } = e.target;
         dispatch(setFormData({ field: name, value }));
@@ -56,7 +52,7 @@ const Signup = () => {
 
     const onFinish = (e) => {
         e.preventDefault();
-        if (!username || !email || !password1 || !password2) {
+        if (!email || !password1 || !password2) {
             alert("Please fill in all fields!");
             return;
         }
@@ -64,8 +60,8 @@ const Signup = () => {
             alert("Passwords do not match!");
             return;
         }
-        setSubmit(true)
-        dispatch(registerUser({username, email, password1, password2}));
+        // setSubmit(true)
+        dispatch(registerUser({ email, password1, password2}));
     };
 
     const styles = {
@@ -76,7 +72,11 @@ const Signup = () => {
             backgroundPosition: "center"
         },
     }
-
+    useEffect(() => {
+        if (success && token) {
+            navigate("/"); // Перенаправляем на главную страницу
+        }
+    }, [success, token, navigate]);
 
 
     return (
@@ -85,13 +85,6 @@ const Signup = () => {
             <h2 className='font-medium text-3xl py-4'>Create a new account</h2>
             <p className='text-base'>Already have an account? <Link to='/signin' className='text-[#C6A982]'> <TextLink>Log in</TextLink> </Link></p>
             <form onSubmit={onFinish} className="flex flex-col gap-5 pt-6 w-full sm:w-2/5">
-                <Input
-                    type="username"
-                    name="username"
-                    placeholder="Enter your Name"
-                    value={username}
-                    onChange={handleChange}
-                />
                 <Input
                     type="email"
                     name="email"
@@ -117,22 +110,30 @@ const Signup = () => {
                     By signing in, you agree to our <br />
                     <Link to='/asd'><TextLink className='text-[#C6A982]'>Terms of Use</TextLink></Link> and <Link to=''><TextLink className='text-[#C6A982]'>Privacy Policy</TextLink>.</Link>
                 </p>
-                <button type='submit' className='py-3 bg-[#C6A982] rounded-xl'>
-                    Sign up
+
+                <button
+                    type="submit"
+                    className={`py-3 rounded-xl ${
+                        loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#C6A982]"
+                    }`}
+                    disabled={loading}
+                >
+                    {loading ? "Loading..." : "Sign up"}
                 </button>
-                <div className='flex items-center gap-3 justify-between opacity-50'>
-                    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />
-                    <p className='sm:text-base text-sm'>Or sign up with</p>
-                    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />
-                </div>
-                <Wrapper className='flex justify-between items-center '>
-                    <Button className=''>
-                        <Google />
-                    </Button>
-                    <Button className=''>
-                        <Apple />
-                    </Button>
-                </Wrapper>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                {/*<div className='flex items-center gap-3 justify-between opacity-50'>*/}
+                {/*    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />*/}
+                {/*    <p className='sm:text-base text-sm'>Or sign up with</p>*/}
+                {/*    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />*/}
+                {/*</div>*/}
+                {/*<Wrapper className='flex justify-between items-center '>*/}
+                {/*    <Button className=''>*/}
+                {/*        <Google />*/}
+                {/*    </Button>*/}
+                {/*    <Button className=''>*/}
+                {/*        <Apple />*/}
+                {/*    </Button>*/}
+                {/*</Wrapper>*/}
             </form>
 
             <Modal submit={submit} />

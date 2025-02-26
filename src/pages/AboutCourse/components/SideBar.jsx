@@ -2,6 +2,7 @@ import React from 'react';
 import { Certification, Download, Info, Phone, Vector } from '../../../ui/icons';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import {useSelector} from "react-redux";
 
 const SidebarContainer = styled.div`
     width: 30%;
@@ -52,16 +53,17 @@ const courseIncludes = [
     { icon: <Certification />, text: "Certificate of completion of the course" }
 ];
 
-const SideBar = () => {
+const SideBar = ({oldPrice, newPrice, courseId}) => {
+    const {token} = useSelector((state) => state.auth);
     return (
         <SidebarContainer>
             <SidebarWrapper>
                 <p className='font-normal text-sm text-[#1E1E1E]'>Full course</p>
-                <h2 className='font-semibold text-3xl flex items-center gap-3'>$15.99
-                    <span className='line-through text-[#1E1E1E] opacity-80 text-sm'>$15.99</span>
+                <h2 className='font-semibold text-3xl flex items-center gap-3'>${newPrice}
+                    <span className='line-through text-[#1E1E1E] opacity-80 text-sm'>${oldPrice}</span>
                 </h2>
-                <Link to='/passingcourse'>
-                    <BuyButton>Buy</BuyButton>s
+                <Link to={token ? `/passingcourse/${courseId}` : '/signin'}>
+                    <BuyButton>Buy</BuyButton>
                 </Link>
                 <p className='opacity-80 text-[#1E1E1E] pt-2'>Money back within 30 days</p>
 

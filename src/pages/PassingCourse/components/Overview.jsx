@@ -2,7 +2,7 @@ import React from 'react';
 import { People, Warning } from '../../../ui/icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const Overview = () => {
+const Overview = ({course}) => {
     return (
         <>
             <div className='pt-7 flex flex-col gap-5'>
@@ -26,11 +26,7 @@ const Overview = () => {
                 <h2 className='uppercase font-normal text-[#1E1E1E] text-lg sm:text-base'>description</h2>
                 <div className='w-[100%] sm:w-[65%] text-[#5c5c5c]'>
                     <p>
-                        The courses are clearly structured.  The lectures are electronically recorded by instructors
-                        (arbitration practitioners) and delivered online, with educational materials distributed to
-                        the participants at several days beforehand for thorough review before the lectures.
-                        The lectures are followed by live workshops to consolidate the studied material, and the
-                        participants may also query the instructors regarding the subject.
+                        {course?.course_description}
                     </p>
                 </div>
             </div>
