@@ -12,7 +12,7 @@ import Teachers from './Teachers';
 import Training from './Training';
 
 const WtSide = styled.div`
-   display: flex;
+    display: flex;
     gap: clamp(10px, 2vw, 20px);
     flex-wrap: wrap;
 `

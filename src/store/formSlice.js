@@ -5,18 +5,16 @@ export const registerUser = createAsyncThunk(
     'form/registerUser',
     async (formData, { rejectWithValue }) => {
         try {
-            const response = await api.post('/student/auth/register/', {
-              ...formData
-            });
+            const response = await api.post("/student/auth/register/", formData);
 
-            if (!response.ok) {
-                throw new Error('Ошибка при регистрации');
+            const data = response.data;
+            if (data.access) {
+                localStorage.setItem("token", data.access); // Сохраняем токен в localStorage
             }
 
-            const data = await response.json();
-            return data; // Возвращаем данные, которые потом будут использованы в reducer
+            return data; // Возвращаем данные, чтобы обновить store
         } catch (error) {
-            return rejectWithValue(error.message); // Отправляем ошибку
+            return rejectWithValue(error.response?.data?.detail || "Authorization error");
         }
     }
 );
@@ -24,13 +22,13 @@ export const registerUser = createAsyncThunk(
 const formSlice = createSlice({
     name: 'form',
     initialState: {
-        username: '',
         email: '',
         password1: '',
         password2: '',
         loading: false,
         error: null,
         success: false,
+        token: localStorage.getItem("token") || null,
     },
     reducers: {
         setFormData: (state, action) => {
@@ -47,7 +45,8 @@ const formSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = true;
-                // Можно сохранить данные пользователя или сделать другие изменения
+                state.token = action.payload.access; // Сохраняем токен в store
+                localStorage.setItem("token", action.payload.access);
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;

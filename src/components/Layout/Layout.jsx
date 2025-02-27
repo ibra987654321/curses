@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import {Link, Outlet, useNavigate} from 'react-router-dom';
 import { Burger } from '../../ui/icons';
 import { FaWhatsapp, FaTelegram, FaInstagram, FaFacebook, FaYoutube } from "react-icons/fa";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../store/authSlice";
 
 const Layout = () => {
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { token } = useSelector(state => state.auth);
     const [active, setActive] = useState("/");
     const [menuOpen, setMenuOpen] = useState(false)
     const links = ["Main", "About course", "Certification", "About OAA", "Community"];
+
+    const handleLogout = () => {
+        dispatch(logout()); // Удаляем токен из Redux и LocalStorage
+        navigate("/signin"); // Перенаправляем на страницу входа
+    };
 
     return (
         <>
@@ -39,18 +48,31 @@ const Layout = () => {
                         </ul>
 
                     </div>
-                    <div className="flex items-center">
-                        <Link to="/signin" className="text-black text-lg hover:underline">Login</Link>
-                        <span className="mx-3">|</span>
-                        <Link to="/signup" className="text-black text-lg hover:underline">Sign in</Link>
-                        <button className="ml-4 text-black text-xl md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-                            <Burger />
-                        </button>
-                    </div>
+                    {
+                        token ? (
+                            <div>
+                                <button onClick={handleLogout} className="text-black hover:underline">
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center">
+                                <Link to="/signin" className="text-black text-lg hover:underline">Login</Link>
+                                <span className="mx-3">|</span>
+                                <Link to="/signup" className="text-black text-lg hover:underline">Sign in</Link>
+                                <button className="ml-4 text-black text-xl md:hidden"
+                                        onClick={() => setMenuOpen(!menuOpen)}>
+                                    <Burger/>
+                                </button>
+                            </div>
+                        )
+                    }
+
+
                 </nav>
             </header>
 
-            <Outlet />
+            <Outlet/>
 
             <footer className="bg-[#402d1d] text-white py-12 px-6 sm:px-12">
                 <div className="max-w-5xl  grid grid-cols-1 sm:grid-cols-3 gap-8">

@@ -54,21 +54,26 @@ const ModalFlow = ({ isOpen, onClose }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
-    const [resendTimer, setResendTimer] = useState(119);
     const [canResend, setCanResend] = useState(false);
     const inputRefs = useRef([]);
 
+    const [timeLeft, setTimeLeft] = useState(119); // 2 минуты
+
     useEffect(() => {
-        if (isModalOpen && resendTimer > 0) {
+        if (step === 2) {
+            if (timeLeft <= 0) {
+                setCanResend(true)
+                return
+            }
+
             const timer = setInterval(() => {
-                setResendTimer((prev) => prev - 1);
+                setTimeLeft((prev) => prev - 1);
             }, 1000);
+
             return () => clearInterval(timer);
         }
-        if (resendTimer === 0) {
-            setCanResend(true);
-        }
-    }, [isModalOpen, resendTimer]);
+
+    }, [timeLeft, step]);
 
     const handleCodeChange = (index, value) => {
         if (/^[0-9]?$/.test(value)) {
@@ -94,7 +99,7 @@ const ModalFlow = ({ isOpen, onClose }) => {
 
     const handleResendCode = () => {
         if (canResend) {
-            setResendTimer(119);
+            setTimeLeft(119);
             setCanResend(false);
             setVerificationCode(["", "", "", ""]);
             inputRefs.current[0].focus();
@@ -107,6 +112,8 @@ const ModalFlow = ({ isOpen, onClose }) => {
         onClose()
         navigate('/') 
     }
+
+    const isFormValid = verificationCode.every((digit) => digit !== "");
 
     return (
         <ModalForgot isOpen={isOpen} onClose={onClose}>
@@ -132,7 +139,7 @@ const ModalFlow = ({ isOpen, onClose }) => {
                     </button>
 
                     <p className="text-[#402D1D] text-xs sm:text-base  flex items-center justify-center gap-2">Do you already have an account?
-                        <Link to='/signin' style={{ borderBottom: '1px solid ' }}>Login in</Link>
+                        <div className="underline text-[14px] cursor-pointer" onClick={onClose}>Login in</div>
                     </p>
                     <p className="text-[#402D1D] text-xs sm:text-base flex items-center justify-center gap-2">Don't have an account?
                         <Link to='/signup' style={{ borderBottom: '1px solid ' }}>Sign up</Link>
@@ -169,16 +176,18 @@ const ModalFlow = ({ isOpen, onClose }) => {
                     <div className="flex flex-col">
                         <p className="mt-4">
                             <span className="opacity-50">Request again in</span>{" "}
-                            {Math.floor(resendTimer / 60)}:{(resendTimer % 60).toString().padStart(2, "0")}
+                            {/*{Math.floor(resendTimer / 60)}:{(resendTimer % 60).toString().padStart(2, "0")}*/}
+                            {Math.floor(timeLeft / 60) + ':' +(timeLeft % 60).toString().padStart(2, "0")}
                         </p>
-                        <button disabled={!canResend} onClick={handleResendCode} className="py-2 opacity-50">
+                        <button disabled={!canResend} onClick={handleResendCode} className={`py-2 ${!canResend ? 'opacity-50' : 'cursor-pointer opacity-100'}`}>
                             Request again
                         </button>
 
                         <button
                             type="button"
                             onClick={handleSubmit}
-                            className="py-4 bg-[#402D1D] text-[#FFF] rounded-xl mt-5"
+                            disabled={!isFormValid}
+                            className={`py-4 bg-[#402D1D] text-[#FFF] rounded-xl mt-5 ${!isFormValid && 'opacity-70'}`}
                         >
                             Recover password
                         </button>

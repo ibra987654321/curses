@@ -1,7 +1,7 @@
 import './App.css';
 import { Provider } from 'react-redux';
 import store from './store';
-import { Route, Routes } from 'react-router-dom';
+import {Navigate, Outlet, Route, Routes} from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Layout from './components/Layout/Layout';
 import Main from './pages/Main/Main';
@@ -14,6 +14,8 @@ import Profile from './pages/Profile/Profile';
 import PassingCourse from './pages/PassingCourse/PassingCourse';
 
 const App = () => {
+
+
 
   return (
       <Provider store={store}>
@@ -28,7 +30,7 @@ const App = () => {
               <Route path='forget' element={<Forget />} />
               <Route path='aboutcourse' element={<AboutCourse />} />
               <Route path='profile' element={<Profile />} />
-              <Route path='passingcourse' element={<PassingCourse />} />
+              <Route path="passingcourse/:id" element={<PassingCourse />} />
               <Route path='*' element={<NotFound />} />
             </Route>
           </Routes>

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Apple, Google } from '../../ui/icons';
 import styled from 'styled-components';
 import ModalFlow from '../../components/ModalForgot/ModalFlow';
-import {api} from "../../ui/api";
+import {useDispatch, useSelector} from "react-redux";
+import {authUser, setAuthData} from "../../store/authSlice";
+import {setFormData} from "../../store/formSlice";
 
 const Input = styled.input`
 padding: 12px 16px; 
@@ -42,26 +44,24 @@ const Signin = () => {
 
     const [isForgotOpen, setIsForgotOpen] = useState(false);
 
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { email, password, loading, error, success, token } = useSelector((state) => state.auth);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        dispatch(setAuthData({ field: name, value }));
     };
 
     const onFinish = (e) => {
         e.preventDefault();
-        if (!formData.email || !formData.password) {
+        if (!email || !password) {
             alert("Please fill in all fields!");
             return;
         }
-        api.post('/student/auth/token/', formData)
+        dispatch(authUser({ email, password }))
     };
+
     const styles = {
         img: {
             height: "100vh",
@@ -71,7 +71,11 @@ const Signin = () => {
         },
     }
 
-
+    useEffect(() => {
+        if (success && token) {
+            navigate("/");
+        }
+    }, [success, token, navigate]);
 
     return (
         <section style={styles.img} className='px-6 py-[140px] flex flex-col items-center justify-center text-[#FFF] text-center'>
@@ -83,38 +87,32 @@ const Signin = () => {
                     type="email"
                     name="email"
                     placeholder="Enter your E-mail"
-                    value={formData.email}
+                    value={email}
                     onChange={handleChange}
                 />
                 <Input
                     type="password"
                     name="password"
                     placeholder="Enter your password"
-                    value={formData.password}
+                    value={password}
                     onChange={handleChange}
                 />
                 <p className='text-right text-[#C6A982]'>
                     <Link onClick={() => setIsForgotOpen(true)}><TextLink>Forgot your password?</TextLink></Link>
                 </p>
-                <button type='submit' className='py-3 bg-[#C6A982] rounded-xl'>
-                    Sign up
+                <button
+                    type="submit"
+                    className={`py-3 rounded-xl ${
+                        loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#C6A982]"
+                    }`}
+                    disabled={loading}
+                >
+                    {loading ? "Loading..." : "Sign in"}
                 </button>
-                <div className='flex items-center gap-3 justify-between opacity-50'>
-                    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />
-                    <p className='sm:text-base text-sm'>Or sign up with</p>
-                    <hr className='text-[#FFFFFF] w-1/4 sm:w-2/6' />
-                </div>
-                <Wrapper className='flex justify-between items-center '>
-                    <Button className=''>
-                        <Google />
-                    </Button>
-                    <Button className=''>
-                        <Apple />
-                    </Button>
-                </Wrapper>
+                {error && <p style={{ color: "red" }}>{error}</p>}
             </form>
 
-            <ModalFlow isOpen={isForgotOpen} onClose={() => setIsForgotOpen(false)} />
+            <ModalFlow isOpen={isForgotOpen} onClose={() => setIsForgotOpen(false)}/>
 
         </section>
     );

@@ -1,133 +1,66 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../ui/api";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {api} from "../ui/api";
 
-export const registerTeacher = createAsyncThunk(
-    "auth/registerTeacher",
-    async ({ username, password, email, phone_number, role }, { rejectWithValue }) => {
+export const authUser = createAsyncThunk(
+    'form/authUser',
+    async (formData, { rejectWithValue }) => {
         try {
-            const response = await api.post("/teacher_api/register/teacher/", {
-                user: { username, password, email },
-                phone_number,
-                role,
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data || "Ошибка регистрации");
-        }
-    }
-);
+            const response = await api.post("/student/auth/token/", formData);
 
+            const data = response.data;
+            if (data.access) {
+                localStorage.setItem("token", data.access); // Сохраняем токен в localStorage
+            }
 
-export const verifyPhone = createAsyncThunk(
-    "auth/verifyPhone",
-    async ({ phone_number, verification_code }, { rejectWithValue }) => {
-        try {
-            const response = await api.post("/teacher_api/verify-phone/teacher/", {
-                phone_number,
-                verification_code,
-            });
-            return response.data;
+            return data; // Возвращаем данные, чтобы обновить store
         } catch (error) {
-            return rejectWithValue(error?.response?.data?.error || "Ошибка верификации");
+            return rejectWithValue(error.response?.data?.detail || "Authorization error");
         }
     }
 );
 
-export const loginTeacher = createAsyncThunk(
-    "auth/loginTeacher",
-    async ({ username, password }, { rejectWithValue }) => {
-        try {
-            const response = await api.post("/teacher_api/login/teacher/", {
-                username,
-                password,
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data || "Ошибка авторизации");
-        }
-    }
-);
-export const forgotPasswordTeacher = createAsyncThunk(
-    "auth/forgotPasswordTeacher",
-    async ({ phone_number }, { rejectWithValue }) => {
-        try {
-            const response = await api.post("/teacher_api/forgot-password/teacher/", {
-                phone_number
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data || "Ошибка авторизации");
-        }
-    }
-);
-export const resetPasswordTeacher = createAsyncThunk(
-    "auth/resetPasswordTeacher",
-    async ({ phone_number,reset_code,new_password }, { rejectWithValue }) => {
-        try {
-            const response = await api.post("/teacher_api/reset-password/teacher/", {
-                phone_number,
-                reset_code,
-                new_password
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data || "Ошибка авторизации");
-        }
-    }
-);
-export const authSlice = createSlice({
-    name: "auth",
+const authSlice = createSlice({
+    name: 'form',
     initialState: {
-        isAuthenticated: false,
-        user: null,
+        email: '',
+        password: '',
         loading: false,
-        phone:"",
         error: null,
+        success: false,
+        isAuthenticated: false,
+        token: localStorage.getItem("token") || null,
     },
     reducers: {
-        login: (state, action) => {
+        setAuthData: (state, action) => {
+            const { field, value } = action.payload;
+            state[field] = value;
             state.isAuthenticated = true;
-            state.user = action.payload;
         },
         logout: (state) => {
             state.isAuthenticated = false;
-            state.user = null;
-        },
-        forgotPassword: (state,action) => {
-            state.phone = action.payload;
+            state.token = null;
+            localStorage.removeItem("token"); // Удаляем токен при выходе
         },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(registerTeacher.pending, (state) => {
+            .addCase(authUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(registerTeacher.fulfilled, (state, action) => {
+            .addCase(authUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
+                state.success = true;
+                state.token = action.payload.access; // Сохраняем токен в store
+                localStorage.setItem("token", action.payload.access); // Записываем в LocalStorage
             })
-            .addCase(registerTeacher.rejected, (state, action) => {
+            .addCase(authUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(loginTeacher.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(loginTeacher.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
-                localStorage.setItem("MAZA_BOOK",action.payload.access)
-            })
-            .addCase(loginTeacher.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
+                state.error = action.payload || 'Что-то пошло не так';
             });
     },
 });
 
-export const { login, logout , forgotPassword} = authSlice.actions;
+export const { setAuthData, logout } = authSlice.actions;
+
 export default authSlice.reducer;

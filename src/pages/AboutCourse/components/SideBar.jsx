@@ -2,6 +2,7 @@ import React from 'react';
 import { Certification, Download, Info, Phone, Vector } from '../../../ui/icons';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import {useSelector} from "react-redux";
 
 const SidebarContainer = styled.div`
     width: 30%;
@@ -26,7 +27,7 @@ const BuyButton = styled.button`
     font-weight: 500;
     cursor: pointer;
     transition: background 0.3s;
-    
+
     &:hover {
         background: #5A3A26;
     }
@@ -53,6 +54,9 @@ const courseIncludes = [
 ];
 
 const SideBar = () => {
+
+    const {token} = useSelector((state) => state.auth);
+
     return (
         <SidebarContainer>
             <SidebarWrapper>
@@ -60,8 +64,8 @@ const SideBar = () => {
                 <h2 className='font-semibold text-3xl flex items-center gap-3'>$15.99
                     <span className='line-through text-[#1E1E1E] opacity-80 text-sm'>$15.99</span>
                 </h2>
-                <Link to='/passingcourse'>
-                    <BuyButton>Buy</BuyButton>s
+                <Link to={token ? '/passingcourse/1' : '/signin'}>
+                    <BuyButton className='text-base'>Buy</BuyButton>
                 </Link>
                 <p className='opacity-80 text-[#1E1E1E] pt-2'>Money back within 30 days</p>
 
