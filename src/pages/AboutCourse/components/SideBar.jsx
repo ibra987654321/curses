@@ -56,6 +56,7 @@ const courseIncludes = [
 const SideBar = () => {
 
     const {token} = useSelector((state) => state.auth);
+    const { token: registerToken } = useSelector(state => state.form);
 
     return (
         <SidebarContainer>
@@ -64,7 +65,7 @@ const SideBar = () => {
                 <h2 className='font-semibold text-3xl flex items-center gap-3'>$15.99
                     <span className='line-through text-[#1E1E1E] opacity-80 text-sm'>$15.99</span>
                 </h2>
-                <Link to={token ? '/passingcourse/1' : '/signin'}>
+                <Link to={token || registerToken ? '/passingcourse/1' : '/signin'}>
                     <BuyButton className='text-base'>Buy</BuyButton>
                 </Link>
                 <p className='opacity-80 text-[#1E1E1E] pt-2'>Money back within 30 days</p>

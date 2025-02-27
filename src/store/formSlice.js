@@ -35,6 +35,10 @@ const formSlice = createSlice({
             const { field, value } = action.payload;
             state[field] = value;
         },
+        registerLogout: (state) => {
+            state.token = null;
+            localStorage.removeItem("token"); // Удаляем токен при выходе
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -55,6 +59,6 @@ const formSlice = createSlice({
     },
 });
 
-export const { setFormData } = formSlice.actions;
+export const { setFormData, registerLogout } = formSlice.actions;
 
 export default formSlice.reducer;

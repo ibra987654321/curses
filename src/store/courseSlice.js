@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {api, apiWithAuth} from "../ui/api";
+import {api} from "../ui/api";
 
 export const getCourses = createAsyncThunk("courses/fetchCourses", async (_, { rejectWithValue }) => {
     try {
@@ -30,7 +30,7 @@ export const getCourseVideo = createAsyncThunk(
             const response = await api.get(`/courses/teacher_videos/${id}/`);
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.message);
+            return rejectWithValue(error.response?.data?.detail || error.message);
         }
     }
 );

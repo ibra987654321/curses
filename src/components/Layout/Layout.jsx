@@ -4,17 +4,20 @@ import { Burger } from '../../ui/icons';
 import { FaWhatsapp, FaTelegram, FaInstagram, FaFacebook, FaYoutube } from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../store/authSlice";
+import {registerLogout} from "../../store/formSlice";
 
 const Layout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { token } = useSelector(state => state.auth);
+    const { token: registerToken } = useSelector(state => state.form);
     const [active, setActive] = useState("/");
     const [menuOpen, setMenuOpen] = useState(false)
     const links = ["Main", "About course", "Certification", "About OAA", "Community"];
 
     const handleLogout = () => {
         dispatch(logout()); // Удаляем токен из Redux и LocalStorage
+        dispatch(registerLogout()); // Удаляем токен из Redux и LocalStorage
         navigate("/signin"); // Перенаправляем на страницу входа
     };
 
@@ -49,7 +52,7 @@ const Layout = () => {
 
                     </div>
                     {
-                        token ? (
+                        token || registerToken ? (
                             <div>
                                 <button onClick={handleLogout} className="text-black hover:underline">
                                     Logout

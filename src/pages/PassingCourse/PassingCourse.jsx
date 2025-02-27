@@ -30,12 +30,18 @@ const PassingCourse = () => {
     }, [dispatch, id]);
 
     const show = () => {
-        setShowVideo(true)
-        dispatch(getCourseVideo(1));
+        dispatch(getCourseVideo(1))
+            .then((res) => {
+            if (res.meta.requestStatus === 'rejected') {
+                alert(res.payload);
+                return;
+            }
+            setShowVideo(true)
+        })
     }
 
-    if (loading) return <p>loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    // if (loading) return <p>loading...</p>;
+    // if (error) return <p>Error: {error}</p>;
 
     return (
         <div className='pb-[100px]'>
