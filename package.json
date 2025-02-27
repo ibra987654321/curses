@@ -1,7 +1,6 @@
 {
   "name": "redux-toolkit",
   "version": "0.1.0",
-  "proxy": "http://185.146.3.157",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",

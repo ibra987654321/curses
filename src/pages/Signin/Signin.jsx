@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Apple, Google } from '../../ui/icons';
 import styled from 'styled-components';
 import ModalFlow from '../../components/ModalForgot/ModalFlow';
+import {api} from "../../ui/api";
 
 const Input = styled.input`
 padding: 12px 16px; 
@@ -59,8 +60,8 @@ const Signin = () => {
             alert("Please fill in all fields!");
             return;
         }
+        api.post('/student/auth/token/', formData)
     };
-
     const styles = {
         img: {
             height: "100vh",
